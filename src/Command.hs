@@ -1,33 +1,24 @@
 module Command where
 
 import ClassyPrelude hiding (FilePath, fold)
-import Turtle
-  ( FoldShell(FoldShell), FilePath, directory, dirname, encodeString, foldShell, isDirectory, ls
-  , pwd, stat
-  )
+import Turtle (FoldShell(FoldShell), FilePath, basename, foldShell, isDirectory, ls, pwd, stat)
 
-import qualified Types as T
-
-interpretSubdirs :: MonadIO m => T.Location -> m [FilePath]
-interpretSubdirs loc = do
+interpretSubdirs :: MonadIO m => m [FilePath]
+interpretSubdirs = do
   cwd <- pwd
   let isGitSubdir accum next = do
         nextStatus <- stat next
-        pure $ case accum of
-          Nothing -> case isDirectory nextStatus && dirname next == ".git" of
-            True -> Just next
-            False -> Nothing
-          isGit -> isGit
+        case accum of
+          Nothing -> case isDirectory nextStatus && basename next == ".git" of
+            True -> pure $ Just next
+            False -> pure Nothing
+          isGit -> pure isGit
       gitDir accum next = do
         nextStatus <- stat next
-        case isDirectory nextStatus of
-          False -> pure accum
-          True -> foldShell (ls next) (FoldShell isGitSubdir Nothing pure) >>= \ case
+        case (isDirectory nextStatus, basename next == ".git") of
+          (False, False) -> pure accum
+          (_, True) -> pure $ next:accum
+          (True, _) -> foldShell (ls next) (FoldShell isGitSubdir Nothing pure) >>= \ case
             Just _ -> pure $ next:accum
             Nothing -> pure accum
-  subdirs <- foldShell (ls cwd) $ FoldShell gitDir [] pure
-  case loc of
-    T.LocationAll -> pure subdirs
-    T.LocationSubdir x -> case x `elem` map directory subdirs of
-      False -> fail $ encodeString x <> " is not a subdir of " <> encodeString cwd
-      True -> pure [x]
+  foldShell (ls cwd) $ FoldShell gitDir [] pure
