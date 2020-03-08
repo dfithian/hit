@@ -1,0 +1,54 @@
+name: hit
+version: 0.1
+maintainer: Dan Fithian
+license: AllRightsReserved
+
+default-extensions:
+  - ConstraintKinds
+  - DataKinds
+  - DeriveDataTypeable
+  - EmptyDataDecls
+  - FlexibleContexts
+  - FlexibleInstances
+  - GADTs
+  - GeneralizedNewtypeDeriving
+  - LambdaCase
+  - MultiParamTypeClasses
+  - MultiWayIf
+  - NamedFieldPuns
+  - NoImplicitPrelude
+  - NoMonomorphismRestriction
+  - OverloadedStrings
+  - QuasiQuotes
+  - RankNTypes
+  - RecordWildCards
+  - ScopedTypeVariables
+  - StandaloneDeriving
+  - TemplateHaskell
+  - TupleSections
+  - TypeFamilies
+  - ViewPatterns
+
+ghc-options:
+  - -Wall
+  - -Werror
+  - -fwarn-tabs
+  - -threaded
+  - -O2
+
+dependencies:
+  - base
+  - classy-prelude
+  - optparse-applicative
+  - lens
+  - turtle
+
+library:
+  source-dirs: [src]
+
+executables:
+  hit:
+    main: main.hs
+    source-dirs: app
+    dependencies:
+      - hit
