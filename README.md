@@ -22,6 +22,10 @@ stack install
 hit ls-files
 ```
 
+# Supported commands
+
+* `ls-files`
+
 # Future improvements
 
 Currently, `hit` assumes that you always want to target all subdirectories. Soon there will be a way to differentiate a
