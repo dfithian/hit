@@ -6,6 +6,9 @@ import Turtle (FoldShell(FoldShell), (</>), FilePath, basename, foldShell, isDir
 
 import qualified Types as T
 
+-- |Interpret subdirs. If a project is specified by `name` in `main.hs`, then we interpret the subdirs to be the ones
+-- from that project's config. If not, check the current working directory and return every child that has a `.git`
+-- subdirectory. If we're currently in a git repository, also return that one.
 interpretSubdirs :: MonadIO m => Maybe T.ConfigProject -> m [FilePath]
 interpretSubdirs projectMay = do
   let isGitSubdir accum next = do
