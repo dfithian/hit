@@ -56,4 +56,3 @@ Other commands may work, like `checkout`, `branch`, `commit`, `pull`, and `push`
 # Disclaimers and future improvements
 
 * `~` expansion doesn't work yet, so you must specify a full path for the `home` key
-* Coloring doesn't work in the same way as invocation of `git`
