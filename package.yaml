@@ -42,7 +42,6 @@ dependencies:
   - base
   - classy-prelude
   - directory
-  - optparse-applicative
   - lens
   - process
   - turtle

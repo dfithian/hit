@@ -3,7 +3,6 @@ import Control.Lens (view)
 import Data.Yaml (decodeFileThrow)
 import System.Directory (doesFileExist)
 import Turtle (ExitCode(ExitSuccess), (</>), encodeString, exit, home, shell)
-import qualified Options.Applicative as Opt
 
 import Command (interpretSubdirs, putStrLnComment)
 import qualified Types as T
@@ -13,16 +12,27 @@ data Opts = Opts
   }
 
 parseArgs :: IO Opts
-parseArgs = Opt.execParser $ Opt.info parser mods
+parseArgs = do
+  args <- getArgs
+  case args of
+    [] -> printHelp
+    "--help":_ -> printHelp
+    x:xs ->
+      let getNewArg lastArg next = case lastArg of
+            "-m" -> "\"" <> next <> "\""
+            _ -> next
+          newArgs = x:(map (uncurry getNewArg) $ args `zip` xs)
+      in pure $ Opts newArgs
   where
-    commandArgument = some (pack <$> Opt.strArgument (Opt.metavar "COMMAND"))
-    parser = Opts
-      <$> commandArgument
-    mods = Opt.header "Hit - Git++"
+    printHelp = do
+      putStrLnComment "Hit - project management for git (https://github.com/dfithian/hit)"
+      putStrLnComment "Usage: hit COMMAND"
+      exit ExitSuccess
 
 main :: IO ()
 main = do
   Opts {..} <- parseArgs
+  putStrLnComment $ "Got command \"" <> unwords optsCommand <> "\""
   configFile <- (</> ".hitconfig") <$> home
   let configFileStr = encodeString configFile
   config <- doesFileExist configFileStr >>= \ case

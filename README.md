@@ -50,5 +50,6 @@ hit status
 * `ls-files`
 * `status`
 * `diff`
+* `commit`
 
-Other commands may work, like `checkout`, `branch`, `commit`, `pull`, and `push`, but they are not tested.
+Other commands may work, like `checkout`, `branch`, `pull`, and `push`, but they are not tested.
