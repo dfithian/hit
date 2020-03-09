@@ -27,7 +27,7 @@ Then create a `~/.hitconfig` file with the following schema:
 
 ```yaml
 - name: fullstack
-  home: /Users/<user>/work/git # **NOTE** `~` doesn't work yet
+  home: ~/work/git
   dirs:
     - frontend-repo
     - backend-repo
