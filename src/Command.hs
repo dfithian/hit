@@ -1,11 +1,13 @@
 module Command where
 
-import ClassyPrelude hiding (FilePath, fold)
-import Turtle (FoldShell(FoldShell), FilePath, basename, foldShell, isDirectory, ls, parent, pwd, stat)
+import ClassyPrelude hiding ((</>), FilePath, fold)
+import Control.Lens (view)
+import Turtle (FoldShell(FoldShell), (</>), FilePath, basename, foldShell, isDirectory, ls, parent, pwd, stat)
 
-interpretSubdirs :: MonadIO m => m [FilePath]
-interpretSubdirs = do
-  cwd <- pwd
+import qualified Types as T
+
+interpretSubdirs :: MonadIO m => Maybe T.ConfigProject -> m [FilePath]
+interpretSubdirs projectMay = do
   let isGitSubdir accum next = do
         nextStatus <- stat next
         case accum of
@@ -21,4 +23,11 @@ interpretSubdirs = do
           (True, _) -> foldShell (ls next) (FoldShell isGitSubdir Nothing pure) >>= \ case
             Just _ -> pure $ next:accum
             Nothing -> pure accum
-  foldShell (ls cwd) $ FoldShell gitDir [] pure
+  case projectMay of
+    Just project -> do
+      let projectHome = view T.configProjectHome project
+          projectDirs = view T.configProjectDirs project
+      pure $ (projectHome </>) <$> projectDirs
+    Nothing -> do
+      cwd <- pwd
+      foldShell (ls cwd) $ FoldShell gitDir [] pure

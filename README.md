@@ -22,11 +22,31 @@ stack install
 hit ls-files
 ```
 
+Then create a `~/.hitconfig` file with the following schema:
+
+```yaml
+- name: fullstack
+  home: /Users/<user>/work/git # **NOTE** `~` doesn't work yet
+  dirs:
+    - frontend-repo
+    - backend-repo
+```
+
+Now you can use `hit`:
+
+```bash
+cd ~/work/git
+hit status
+hit fullstack status
+```
+
 # Supported commands
 
 * `ls-files`
+* `status`
+* `diff`
 
-# Future improvements
+# Disclaimers and future improvements
 
-Currently, `hit` assumes that you always want to target all subdirectories. Soon there will be a way to differentiate a
-single or group of subdirectories.
+* `~` expansion doesn't work yet, so you must specify a full path for the `home` key
+* Coloring doesn't work in the same way as invocation of `git`

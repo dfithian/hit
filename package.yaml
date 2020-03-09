@@ -37,12 +37,15 @@ ghc-options:
   - -O2
 
 dependencies:
+  - aeson
   - base
   - classy-prelude
+  - directory
   - optparse-applicative
   - lens
   - process
   - turtle
+  - yaml
 
 library:
   source-dirs: [src]
