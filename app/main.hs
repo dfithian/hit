@@ -2,8 +2,7 @@ import ClassyPrelude hiding ((</>))
 import Control.Lens (view)
 import Data.Yaml (decodeFileThrow)
 import System.Directory (doesFileExist)
-import System.Process (shell)
-import Turtle (ExitCode(ExitSuccess), (</>), encodeString, exit, home, system)
+import Turtle (ExitCode(ExitSuccess), (</>), encodeString, exit, home, shell)
 import qualified Options.Applicative as Opt
 
 import Command (interpretSubdirs, putStrLnComment)
@@ -27,7 +26,7 @@ main = do
   configFile <- (</> ".hitconfig") <$> home
   let configFileStr = encodeString configFile
   config <- doesFileExist configFileStr >>= \ case
-    True -> decodeFileThrow configFileStr >>= T.refineConfig
+    True -> decodeFileThrow configFileStr
     False -> pure T.defaultConfig
   (projectMay, innerCommand) <- case optsCommand of
     x:xs -> case find (\ proj -> view T.configProjectName proj == x) $ view T.configProjects config of
@@ -37,8 +36,8 @@ main = do
   subdirs <- interpretSubdirs projectMay
   forM_ subdirs $ \ subdir -> do
     putStrLnComment $ "# " <> pack (encodeString subdir)
-    let command = shell $ "cd " <> encodeString subdir <> " && git " <> unpack (unwords innerCommand)
-    code <- system command mempty
+    let command = "cd " <> pack (encodeString subdir) <> " && git " <> unwords innerCommand
+    code <- shell command mempty
     case code == ExitSuccess of
       False -> exit code
       True -> pure ()

@@ -52,7 +52,3 @@ hit status
 * `diff`
 
 Other commands may work, like `checkout`, `branch`, `commit`, `pull`, and `push`, but they are not tested.
-
-# Disclaimers and future improvements
-
-* `~` expansion doesn't work yet, so you must specify a full path for the `home` key

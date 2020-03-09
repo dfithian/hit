@@ -1,10 +1,9 @@
 module Types where
 
 import ClassyPrelude hiding (FilePath)
-import Control.Lens (set, view)
 import Control.Lens.TH (makeLenses)
 import Data.Aeson ((.:), FromJSON, parseJSON, withArray, withObject)
-import Turtle (FilePath, decodeString, realpath)
+import Turtle (FilePath, decodeString)
 
 data Config = Config
   { _configProjects :: [ConfigProject]
@@ -25,14 +24,6 @@ makeLenses ''ConfigProject
 
 defaultConfig :: Config
 defaultConfig = Config []
-
--- |Resolve links to `$HOME` etc (TODO).
-refineConfig :: MonadIO m => Config -> m Config
-refineConfig = map Config . traverse refineConfigProject . view configProjects
-  where
-    refineConfigProject project = do
-      refinedHome <- realpath $ view configProjectHome project
-      pure $ set configProjectHome refinedHome project
 
 instance FromJSON ConfigProject where
   parseJSON = withObject "ConfigProject" $ \ obj -> ConfigProject
