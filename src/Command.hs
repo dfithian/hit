@@ -41,6 +41,6 @@ interpretSubdirs projectMay = do
 putStrLnComment :: MonadIO m => Text -> m ()
 putStrLnComment x = liftIO $ do
   setSGR [SetColor Foreground Vivid Blue]
-  putStrLn x
+  putStrLn $ "# " <> x
   setSGR [Reset]
   hFlush stdout -- flush so that the reset hits the terminal

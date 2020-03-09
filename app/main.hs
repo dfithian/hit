@@ -1,10 +1,12 @@
 import ClassyPrelude hiding ((</>))
 import Control.Lens (view)
+import Data.Version (showVersion)
 import Data.Yaml (decodeFileThrow)
 import System.Directory (doesFileExist)
 import Turtle (ExitCode(ExitSuccess), (</>), encodeString, exit, home, shell)
 
 import Command (interpretSubdirs, putStrLnComment)
+import Paths_hit (version)
 import qualified Types as T
 
 data Opts = Opts
@@ -17,6 +19,7 @@ parseArgs = do
   case args of
     [] -> printHelp
     "--help":_ -> printHelp
+    "--version":_ -> printVersion
     x:xs ->
       let getNewArg lastArg next = case lastArg of
             "-m" -> "\"" <> next <> "\""
@@ -25,8 +28,11 @@ parseArgs = do
       in pure $ Opts newArgs
   where
     printHelp = do
-      putStrLnComment "Hit - project management for git (https://github.com/dfithian/hit)"
-      putStrLnComment "Usage: hit COMMAND"
+      putStrLn "Hit - project management for git (https://github.com/dfithian/hit)"
+      putStrLn "Usage: hit COMMAND"
+      exit ExitSuccess
+    printVersion = do
+      putStrLn $ "hit " <> pack (showVersion version)
       exit ExitSuccess
 
 main :: IO ()
@@ -45,7 +51,7 @@ main = do
     [] -> fail "No command specified"
   subdirs <- interpretSubdirs projectMay
   forM_ subdirs $ \ subdir -> do
-    putStrLnComment $ "# " <> pack (encodeString subdir)
+    putStrLnComment $ pack (encodeString subdir)
     let command = "cd " <> pack (encodeString subdir) <> " && git " <> unwords innerCommand
     code <- shell command mempty
     case code == ExitSuccess of
