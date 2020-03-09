@@ -12,9 +12,21 @@ under the hood. This means it can do things like:
 
 # Quick start
 
+## Mac
+
 ```bash
 brew tap dfithian/dfithian
 brew install dfithian/dfithian/hit
+hit ls-files
+```
+
+## Linux
+
+```bash
+curl -sSL https://get.haskellstack.org/ | sh
+git clone https://github.com/dfithian/hit.git
+cd hit
+stack install # and add ~/.local/bin to your $PATH
 hit ls-files
 ```
 
