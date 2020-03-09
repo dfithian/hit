@@ -47,9 +47,13 @@ hit status
 
 # Supported commands
 
+Anything that works with `git` works with `hit`. That said, these are the list of _tested_ commands.
+
 * `ls-files`
 * `status`
 * `diff`
 * `commit`
-
-Other commands may work, like `checkout`, `branch`, `pull`, and `push`, but they are not tested.
+* `checkout`
+* `branch`
+* `pull`
+* `push`
