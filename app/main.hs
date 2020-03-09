@@ -1,6 +1,7 @@
 import ClassyPrelude
 import System.IO (hPutStrLn, stderr, stdout)
-import Turtle (ExitCode(ExitSuccess), encodeString, exit, procStrictWithErr)
+import System.Process (shell)
+import Turtle (ExitCode(ExitSuccess), encodeString, exit, systemStrictWithErr)
 import qualified Options.Applicative as Opt
 
 import Command (interpretSubdirs)
@@ -21,10 +22,10 @@ main :: IO ()
 main = do
   Opts {..} <- parseArgs
   subdirs <- interpretSubdirs
-  let command = words optsCommand
   forM_ subdirs $ \ subdir -> do
     putStrLn $ "# " <> pack (encodeString subdir)
-    (code, out, err) <- procStrictWithErr "git" (["-C", pack $ encodeString subdir] <> command) mempty
+    let command = shell $ "cd " <> encodeString subdir <> " && git " <> unpack optsCommand
+    (code, out, err) <- systemStrictWithErr command mempty
     traverse_ (hPutStrLn stdout . unpack) $ lines out
     traverse_ (hPutStrLn stderr . unpack) $ lines err
     case code == ExitSuccess of

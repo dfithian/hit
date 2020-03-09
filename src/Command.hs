@@ -1,7 +1,7 @@
 module Command where
 
 import ClassyPrelude hiding (FilePath, fold)
-import Turtle (FoldShell(FoldShell), FilePath, basename, foldShell, isDirectory, ls, pwd, stat)
+import Turtle (FoldShell(FoldShell), FilePath, basename, foldShell, isDirectory, ls, parent, pwd, stat)
 
 interpretSubdirs :: MonadIO m => m [FilePath]
 interpretSubdirs = do
@@ -17,7 +17,7 @@ interpretSubdirs = do
         nextStatus <- stat next
         case (isDirectory nextStatus, basename next == ".git") of
           (False, False) -> pure accum
-          (_, True) -> pure $ next:accum
+          (_, True) -> pure $ (parent next):accum
           (True, _) -> foldShell (ls next) (FoldShell isGitSubdir Nothing pure) >>= \ case
             Just _ -> pure $ next:accum
             Nothing -> pure accum

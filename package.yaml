@@ -41,6 +41,7 @@ dependencies:
   - classy-prelude
   - optparse-applicative
   - lens
+  - process
   - turtle
 
 library:
