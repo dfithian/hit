@@ -12,14 +12,9 @@ under the hood. This means it can do things like:
 
 # Quick start
 
-Clone the repo, install the binary with `stack` (https://docs.haskellstack.org/en/stable/README/), and make sure
-`~/.local/bin` is in your `$PATH`.
-
 ```bash
-curl -sSL https://get.haskellstack.org/ | sh
-git clone https://github.com/dfithian/hit.git
-cd hit
-stack install
+brew tap dfithian/dfithian
+brew install dfithian/dfithian/hit
 hit ls-files
 ```
 
