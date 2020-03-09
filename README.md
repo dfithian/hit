@@ -23,7 +23,7 @@ stack install
 hit ls-files
 ```
 
-That's it! `hit` will discover any directory with `git` subdirectories.
+That's it! Running `hit` in any directory will discover subdirectory git repositories.
 
 # Projects
 
@@ -37,7 +37,7 @@ In order to manage groups of projects together, create a `~/.hitconfig` file wit
     - backend-repo
 ```
 
-Now you can use `hit` on the project named `fullstack`:
+Now you can use `hit` on the project named `fullstack` from anywhere on your machine:
 
 ```bash
 hit fullstack status
