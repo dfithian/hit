@@ -2,6 +2,8 @@ module Command where
 
 import ClassyPrelude hiding ((</>), FilePath, fold)
 import Control.Lens (view)
+import System.Console.ANSI (Color(Blue), ColorIntensity(Vivid), ConsoleLayer(Foreground), SGR(Reset, SetColor), setSGR)
+import System.IO (stdout)
 import Turtle (FoldShell(FoldShell), (</>), FilePath, basename, foldShell, isDirectory, ls, parent, pwd, stat)
 
 import qualified Types as T
@@ -34,3 +36,11 @@ interpretSubdirs projectMay = do
     Nothing -> do
       cwd <- pwd
       foldShell (ls cwd) $ FoldShell gitDir [] pure
+
+-- |Print a command from this program, always in blue and always unset after.
+putStrLnComment :: MonadIO m => Text -> m ()
+putStrLnComment x = liftIO $ do
+  setSGR [SetColor Foreground Vivid Blue]
+  putStrLn x
+  setSGR [Reset]
+  hFlush stdout -- flush so that the reset hits the terminal

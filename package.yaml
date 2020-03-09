@@ -38,6 +38,7 @@ ghc-options:
 
 dependencies:
   - aeson
+  - ansi-terminal
   - base
   - classy-prelude
   - directory

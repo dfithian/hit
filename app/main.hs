@@ -2,12 +2,11 @@ import ClassyPrelude hiding ((</>))
 import Control.Lens (view)
 import Data.Yaml (decodeFileThrow)
 import System.Directory (doesFileExist)
-import System.IO (hPutStrLn, stderr, stdout)
 import System.Process (shell)
-import Turtle (ExitCode(ExitSuccess), (</>), encodeString, exit, home, systemStrictWithErr)
+import Turtle (ExitCode(ExitSuccess), (</>), encodeString, exit, home, system)
 import qualified Options.Applicative as Opt
 
-import Command (interpretSubdirs)
+import Command (interpretSubdirs, putStrLnComment)
 import qualified Types as T
 
 data Opts = Opts
@@ -37,11 +36,9 @@ main = do
     [] -> fail "No command specified"
   subdirs <- interpretSubdirs projectMay
   forM_ subdirs $ \ subdir -> do
-    putStrLn $ "# " <> pack (encodeString subdir)
+    putStrLnComment $ "# " <> pack (encodeString subdir)
     let command = shell $ "cd " <> encodeString subdir <> " && git " <> unpack (unwords innerCommand)
-    (code, out, err) <- systemStrictWithErr command mempty
-    traverse_ (hPutStrLn stdout . unpack) $ lines out
-    traverse_ (hPutStrLn stderr . unpack) $ lines err
+    code <- system command mempty
     case code == ExitSuccess of
       False -> exit code
       True -> pure ()
