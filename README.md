@@ -23,7 +23,11 @@ stack install
 hit ls-files
 ```
 
-Then create a `~/.hitconfig` file with the following schema:
+That's it! `hit` will discover any directory with `git` subdirectories.
+
+# Projects
+
+In order to manage groups of projects together, create a `~/.hitconfig` file with the following schema:
 
 ```yaml
 - name: fullstack
@@ -33,16 +37,10 @@ Then create a `~/.hitconfig` file with the following schema:
     - backend-repo
 ```
 
-Now you can use `hit`:
+Now you can use `hit` on the project named `fullstack`:
 
 ```bash
 hit fullstack status
-```
-
-Or, if you're in the `~/work/git` directory, you can get info on all repositories:
-
-```bash
-hit status
 ```
 
 # Supported commands
