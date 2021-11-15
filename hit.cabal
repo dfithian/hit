@@ -1,6 +1,6 @@
 cabal-version: 3.0
 name:          hit
-version:       0.2
+version:       1.0
 maintainer:    Dan Fithian
 license:       MIT
 build-type:    Simple

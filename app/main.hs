@@ -45,7 +45,7 @@ main :: IO ()
 main = do
   Opts {..} <- parseArgs
   putStrLnComment $ "Got command \"" <> pack (unwords optsCommand) <> "\""
-  configFile <- (</> ".hitconfig") <$> getXdgDirectory XdgConfig "hit"
+  configFile <- (</> "config") <$> getXdgDirectory XdgConfig "hit"
   T.Config {..} <- doesFileExist configFile >>= \case
     True -> decodeFileThrow configFile
     False -> pure T.defaultConfig

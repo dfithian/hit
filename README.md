@@ -10,17 +10,7 @@ under the hood. This means it can do things like:
 * Listing files: `hit ls-files`
 * Checking the status of a few repositories in a project: `hit backend status`
 
-# Quick start
-
-## Mac
-
-```bash
-brew tap dfithian/dfithian
-brew install dfithian/dfithian/hit
-hit ls-files
-```
-
-## Linux
+## Quick start
 
 ```bash
 curl -sSL https://get.haskellstack.org/ | sh
@@ -32,12 +22,12 @@ hit ls-files
 
 That's it! Running `hit` in any directory will discover subdirectory git repositories.
 
-# Projects
+## Projects
 
-In order to manage groups of projects together, create a `~/.hitconfig` file with the following schema:
+In order to manage groups of projects together, create a `~/.config/hit/config` file with the following schema:
 
 ```yaml
-- name: fullstack
+fullstack:
   home: ~/work/git
   dirs:
     - frontend-repo
@@ -50,7 +40,7 @@ Now you can use `hit` on the project named `fullstack` from anywhere on your mac
 hit fullstack status
 ```
 
-# Supported commands
+## Supported commands
 
 Anything that works with `git` works with `hit`. That said, these are the list of _tested_ commands.
 
