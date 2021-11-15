@@ -1,0 +1,70 @@
+cabal-version: 3.0
+name:          hit
+version:       1.0
+maintainer:    Dan Fithian
+license:       MIT
+build-type:    Simple
+
+common options
+  default-language: Haskell2010
+  default-extensions:
+      ConstraintKinds
+      DataKinds
+      DeriveDataTypeable
+      EmptyDataDecls
+      FlexibleContexts
+      FlexibleInstances
+      GADTs
+      GeneralizedNewtypeDeriving
+      LambdaCase
+      MultiParamTypeClasses
+      MultiWayIf
+      NamedFieldPuns
+      NoImplicitPrelude
+      NoMonomorphismRestriction
+      OverloadedStrings
+      QuasiQuotes
+      RankNTypes
+      RecordWildCards
+      ScopedTypeVariables
+      StandaloneDeriving
+      TemplateHaskell
+      TupleSections
+      TypeFamilies
+      ViewPatterns
+  build-depends:
+      aeson >= 1.5.6.0 && < 1.6
+    , base < 5.0
+    , containers >= 0.6.5.1 && < 0.7
+    , directory >= 1.3.6.0 && < 1.4
+    , filepath >= 1.4.2.1 && < 1.5
+    , process >= 1.6.13.2 && < 1.7
+    , text >= 1.2.4.1 && < 1.3
+    , text-ansi >= 0.1.1 && < 0.2
+    , unordered-containers >= 0.2.14.0 && < 0.3
+    , vector >= 0.12.3.1 && < 0.13
+    , yaml >= 0.11.6.0 && < 0.12
+
+common ghc-options
+  ghc-options: -Wall -Werror -fwarn-tabs -threaded -O0
+
+common ghc-exe-options
+  ghc-options: -Wall -Werror -fwarn-tabs -threaded -O2
+
+library
+  import: options, ghc-options
+  exposed-modules:
+      Command
+      Types
+  hs-source-dirs:
+      src
+
+executable hit
+  import: options, ghc-exe-options
+  main-is: main.hs
+  other-modules:
+      Paths_hit
+  hs-source-dirs:
+      app
+  build-depends:
+    , hit

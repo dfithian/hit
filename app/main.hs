@@ -1,16 +1,22 @@
-import ClassyPrelude hiding ((</>))
-import Control.Lens (view)
+import Prelude
+
+import Control.Monad (forM_)
+import Data.Text (pack)
 import Data.Version (showVersion)
 import Data.Yaml (decodeFileThrow)
-import System.Directory (doesFileExist)
-import Turtle (ExitCode(ExitSuccess), (</>), encodeString, exit, home, shell)
+import System.Directory (XdgDirectory(XdgConfig), doesFileExist, getXdgDirectory)
+import System.Environment (getArgs)
+import System.Exit (ExitCode(ExitSuccess), exitWith)
+import System.FilePath.Posix ((</>))
+import System.Process (callProcess)
+import qualified Data.Map.Strict as Map
 
 import Command (interpretSubdirs, putStrLnComment)
 import Paths_hit (version)
 import qualified Types as T
 
 data Opts = Opts
-  { optsCommand :: [Text]
+  { optsCommand :: [String]
   }
 
 parseArgs :: IO Opts
@@ -29,31 +35,26 @@ parseArgs = do
   where
     printHelp = do
       putStrLn "Hit - project management for git (https://github.com/dfithian/hit)"
-      putStrLn "Usage: hit COMMAND"
-      exit ExitSuccess
+      putStrLn "Usage: hit [PROJECT] COMMAND"
+      exitWith ExitSuccess
     printVersion = do
-      putStrLn $ "hit " <> pack (showVersion version)
-      exit ExitSuccess
+      putStrLn $ "hit " <> showVersion version
+      exitWith ExitSuccess
 
 main :: IO ()
 main = do
   Opts {..} <- parseArgs
-  putStrLnComment $ "Got command \"" <> unwords optsCommand <> "\""
-  configFile <- (</> ".hitconfig") <$> home
-  let configFileStr = encodeString configFile
-  config <- doesFileExist configFileStr >>= \ case
-    True -> decodeFileThrow configFileStr
+  putStrLnComment $ "Got command \"" <> pack (unwords optsCommand) <> "\""
+  configFile <- (</> "config") <$> getXdgDirectory XdgConfig "hit"
+  T.Config {..} <- doesFileExist configFile >>= \case
+    True -> decodeFileThrow configFile
     False -> pure T.defaultConfig
   (projectMay, innerCommand) <- case optsCommand of
-    x:xs -> case find (\ proj -> view T.configProjectName proj == x) $ view T.configProjects config of
+    x:xs -> case Map.lookup (pack x) configProjects of
       Just project -> pure (Just project, xs)
       Nothing -> pure (Nothing, optsCommand)
     [] -> fail "No command specified"
   subdirs <- interpretSubdirs projectMay
-  forM_ subdirs $ \ subdir -> do
-    putStrLnComment $ pack (encodeString subdir)
-    let command = "cd " <> pack (encodeString subdir) <> " && git " <> unwords innerCommand
-    code <- shell command mempty
-    case code == ExitSuccess of
-      False -> exit code
-      True -> pure ()
+  forM_ subdirs $ \subdir -> do
+    putStrLnComment $ pack subdir
+    callProcess "git" (["-C", subdir] <> innerCommand)
